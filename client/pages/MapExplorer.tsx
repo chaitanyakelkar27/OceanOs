@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/api/api";
 import { useUIStore } from "@/stores/ui";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
-import { Icon, LatLngBounds } from 'leaflet';
-import { useCallback, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { Icon } from 'leaflet';
+import { useState, useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 
 // Fix for default markers in Leaflet with Vite
@@ -22,29 +22,11 @@ const fishIcon = new Icon({
   popupAnchor: [0, -32],
 });
 
-function MapEventHandler() {
-  const { setBBox } = useUIStore();
-  
-  useMapEvents({
-    moveend: function () {
-      const bounds = this.getBounds();
-      const bbox: [number, number, number, number] = [
-        bounds.getWest(),
-        bounds.getSouth(), 
-        bounds.getEast(),
-        bounds.getNorth()
-      ];
-      setBBox(bbox);
-    }
-  });
-  
-  return null;
-}
-
 export default function MapExplorer() {
-  const { bbox, speciesId, dateRange, toggleCommunityReports, communityReports } = useUIStore();
+  const { bbox, speciesId, dateRange, toggleCommunityReports, communityReports, setBBox } = useUIStore();
   const [selectedSpecies, setSelectedSpecies] = useState<string>("");
   const [dateFilter, setDateFilter] = useState({ start: "", end: "" });
+  const mapRef = useRef<any>(null);
   
   const { data, isLoading } = useQuery({
     queryKey: ["geospatial", bbox, speciesId, dateRange],
@@ -120,13 +102,12 @@ export default function MapExplorer() {
           zoom={5}
           style={{ height: '100%', width: '100%' }}
           className="rounded-xl"
+          ref={mapRef}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          
-          <MapEventHandler />
           
           {/* Ocean Temperature Markers */}
           {temperatureData.map((point, idx) => (

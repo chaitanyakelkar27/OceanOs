@@ -10,7 +10,7 @@ import Layout from "@/components/Layout";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
-import MapExplorer from "./pages/MapExplorer";
+import MapExplorer from "./pages/MapExplorerFixed";
 import DataUpload from "./pages/DataUpload";
 import About from "./pages/About";
 import Modules from "./pages/Modules";
