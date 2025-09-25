@@ -1,0 +1,100 @@
+// Prisma schema (snippet) — not wired in this scaffold yet
+// Requires: PostgreSQL with PostGIS and TimescaleDB extensions enabled
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String  @id @default(cuid())
+  email     String  @unique
+  password  String
+  role      String  // viewer | researcher | curator | admin
+  name      String
+  bio       String?
+  photoUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Species {
+  id               String   @id @default(cuid())
+  scientific_name  String
+  common_name      String
+  taxonomy         Json
+  curator_notes    String?
+  last_reviewed_by String?
+  observations     Observation[]
+
+  @@index([scientific_name, common_name])
+}
+
+model Photo {
+  id           String  @id @default(cuid())
+  s3_key       String
+  photographer String
+  license      String?
+  caption      String?
+}
+
+model Dataset {
+  id                 String   @id @default(cuid())
+  title              String
+  description        String?
+  uploaded_by        String
+  processing_status  String   // queued | processing | approved | rejected
+  reviewer_notes     String?
+  provenance         Json?
+  createdAt          DateTime @default(now())
+}
+
+model Observation {
+  id           String   @id @default(cuid())
+  species_id   String
+  species      Species  @relation(fields: [species_id], references: [id])
+  observed_at  DateTime
+  recorded_by  String
+  validated_by String?
+  dataset_id   String
+  geom         Unsupported("geography(Point,4326)")
+  photos       String[]
+
+  @@index([species_id])
+  @@index([observed_at])
+  @@index([geom(ops: raw("gist"))])
+}
+
+model Sensor {
+  id       String @id @default(cuid())
+  label    String
+  location Unsupported("geography(Point,4326)")
+  meta     Json?
+}
+
+// Timescale hypertable example: Prisma stores as a normal table; migration would convert to hypertable
+model SensorReading {
+  id        String   @id @default(cuid())
+  sensor_id String
+  sensor    Sensor   @relation(fields: [sensor_id], references: [id])
+  time      DateTime
+  value     Float
+  type      String
+
+  @@index([sensor_id, time])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  entity    String
+  entity_id String
+  action    String
+  actor_id  String
+  note      String?
+  diff      Json?
+  created_at DateTime @default(now())
+}
