@@ -4,8 +4,12 @@ export class AIService {
     protected ollama: Ollama;
 
     constructor() {
+        // Support both local and tunneled Ollama hosts
+        const ollamaHost = process.env.OLLAMA_HOST || 'http://localhost:11434';
+        console.log(`🔗 Connecting to Ollama at: ${ollamaHost}`);
+
         this.ollama = new Ollama({
-            host: 'http://localhost:11434' // Default Ollama host
+            host: ollamaHost
         });
     }
 

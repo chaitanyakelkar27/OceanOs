@@ -10,9 +10,21 @@ function getRefreshToken() {
   return localStorage.getItem("refreshToken");
 }
 
+// Determine API base URL based on environment
+function getApiBaseUrl() {
+  // In production (Netlify), use the tunneled API URL
+  if (import.meta.env.PROD && import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+
+  // In development, use relative path (proxied by Vite)
+  return "/api";
+}
+
 export const api = axios.create({
-  baseURL: "/api",
-  headers: { "X-Client": "atlas-natura" },
+  baseURL: getApiBaseUrl(),
+  headers: { "X-Client": "oceanos" },
+  timeout: 30000, // 30s timeout for tunneled requests
 });
 
 api.interceptors.request.use((config) => {
@@ -23,7 +35,8 @@ api.interceptors.request.use((config) => {
   }
   (config.headers as any)["X-Provenance"] = JSON.stringify({
     sentAt: new Date().toISOString(),
-    app: "atlas-natura",
+    app: "oceanos",
+    environment: import.meta.env.PROD ? "production" : "development",
   });
   return config;
 });
