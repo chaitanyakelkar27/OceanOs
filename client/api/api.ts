@@ -30,10 +30,15 @@ export const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = getAccessToken();
   if (token) {
-    config.headers = config.headers || {};
-    (config.headers as any)["Authorization"] = `Bearer ${token}`;
+    if (!config.headers) {
+      config.headers = {} as any;
+    }
+    config.headers["Authorization"] = `Bearer ${token}`;
   }
-  (config.headers as any)["X-Provenance"] = JSON.stringify({
+  if (!config.headers) {
+    config.headers = {} as any;
+  }
+  config.headers["X-Provenance"] = JSON.stringify({
     sentAt: new Date().toISOString(),
     app: "oceanos",
     environment: import.meta.env.PROD ? "production" : "development",

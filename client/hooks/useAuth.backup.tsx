@@ -1,8 +1,8 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
-import { api } from "../api/api";
-import { User, UserRole, LoginRequest, RegisterRequest } from "../../shared/api";
+import { api } from "@/api/api";
+import { User, UserRole, LoginRequest, RegisterRequest } from "@shared/api";
 
-export interface AuthContextType {
+type AuthContextType = {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -11,11 +11,11 @@ export interface AuthContextType {
   hasRole: (role: UserRole) => boolean;
   isGovernment: boolean;
   isResearcher: boolean;
-}
+};
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({ children }: PropsWithChildren) => {
+export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -81,10 +81,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }), [user, loading, isGovernment, isResearcher]);
   
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+}
 
-export const useAuth = (): AuthContextType => {
+export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
-};
+}
+
+// Export types for external use
+export type { AuthContextType };

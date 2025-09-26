@@ -241,7 +241,7 @@ export default function MapExplorer() {
             </div>
           </div>
           <div className="text-xs text-foreground/60">
-            {isLoading ? "🔄 Loading..." : "🟢 Live Data"}
+            {isLoading ? "Loading..." : "Live Data"}
           </div>
         </div>
       </div>

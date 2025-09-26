@@ -22,16 +22,16 @@ export default function Modules() {
     },
   ];
   return (
-    <div>
-      <h1 className="font-serif text-2xl">AI Modules</h1>
-      <p className="mt-2 text-foreground/80 max-w-2xl">
-        Unified analytics across oceanography, fisheries, and molecular biodiversity. These modules are scaffolded and ready to wire to your models and data.
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-medium text-gray-900 mb-4">AI Research Modules</h1>
+      <p className="mt-2 text-gray-600 max-w-2xl mb-8">
+        Advanced analytical tools for oceanography, fisheries, and molecular biodiversity research. These professional-grade modules integrate seamlessly with your data and computational models.
       </p>
-      <div className="mt-6 grid gap-4 grid-cols-1 md:grid-cols-3">
+      <div className="mt-6 grid gap-6 grid-cols-1 md:grid-cols-3">
         {cards.map((c) => (
-          <Link key={c.title} to={c.to} className="rounded-xl border bg-card p-5 hover:shadow-sm">
-            <div className="font-serif text-xl">{c.title}</div>
-            <p className="mt-2 text-sm text-foreground/70">{c.body}</p>
+          <Link key={c.title} to={c.to} className="card-gov p-6 hover:shadow-lg transition-shadow">
+            <div className="font-medium text-xl text-gray-900 mb-3">{c.title}</div>
+            <p className="text-sm text-gray-600">{c.body}</p>
           </Link>
         ))}
       </div>

@@ -170,7 +170,7 @@ Provide 3-5 most likely species with conservative confidence scores (0.0-1.0). S
             const modelAvailable = serviceAvailable ? await this.isModelAvailable() : false;
 
             if (!serviceAvailable || !modelAvailable) {
-                console.log('🔄 Using fallback identification (Ollama/model unavailable)');
+                console.log('Using fallback identification (Ollama/model unavailable)');
                 return this.fallbackSpeciesIdentification(traits, hasImage);
             }
 
@@ -217,7 +217,7 @@ Provide 3-5 most likely species with conservative confidence scores (0.0-1.0). S
 
             const aiSuggestions = JSON.parse(jsonMatch[0]);
 
-            console.log('✅ Llama 3.1 8B identification successful');
+            console.log('Llama 3.1 8B identification successful');
 
             // Enhanced validation and filtering
             const validatedSuggestions = aiSuggestions

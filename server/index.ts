@@ -2,7 +2,8 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { login, me, refresh, logout } from "./routes/auth";
+import { login, me, refresh, logout, register, requireAuth, requireGovernment, requireResearcher } from "./routes/auth";
+import { getSubmissions, getPendingSubmissions, createSubmission, reviewSubmission, getSubmissionById, updateSubmission } from "./routes/submissions";
 import { searchSpecies, getSpecies, createSpecies, updateSpecies } from "./routes/species";
 import { geospatial, getObservation, createObservation } from "./routes/observations";
 import { listSensors, sensorData } from "./routes/sensors";
@@ -99,9 +100,18 @@ export function createServer() {
 
   // Auth
   app.post("/api/auth/login", login);
+  app.post("/api/auth/register", register);
   app.post("/api/auth/refresh", refresh);
   app.get("/api/auth/me", me);
   app.post("/api/auth/logout", logout);
+
+  // Data Submissions & Approval System
+  app.get("/api/submissions", requireAuth, getSubmissions);
+  app.get("/api/submissions/pending", ...requireGovernment, getPendingSubmissions);
+  app.post("/api/submissions", ...requireResearcher, createSubmission);
+  app.get("/api/submissions/:submissionId", requireAuth, getSubmissionById);
+  app.put("/api/submissions/:submissionId", ...requireResearcher, updateSubmission);
+  app.post("/api/submissions/:submissionId/review", ...requireGovernment, reviewSubmission);
 
   // Species
   app.get("/api/species", searchSpecies);

@@ -81,20 +81,20 @@ export default function Taxonomy() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 p-6">
       <div>
-        <h1 className="font-serif text-3xl">AI Species Identification</h1>
-        <p className="mt-2 text-foreground/80">
-          Upload fish images or enter physical traits to get AI-powered species identification. 
-          Our models are trained on marine biodiversity data from Indian coastal waters.
+        <h1 className="text-3xl font-medium text-gray-900 mb-4">AI Species Identification</h1>
+        <p className="mt-2 text-gray-600">
+          Upload marine specimen images or enter physical characteristics to receive AI-powered species identification. 
+          Our classification models are trained on marine biodiversity datasets from Indian coastal waters.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Image Upload Section */}
-        <Card>
+        <Card className="card-gov">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-gray-900">
               <Camera className="w-5 h-5" />
               Image Classification
             </CardTitle>
@@ -128,9 +128,9 @@ export default function Taxonomy() {
         </Card>
 
         {/* Traits Input Section */}
-        <Card>
+        <Card className="card-gov">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-gray-900">
               <Fish className="w-5 h-5" />
               Physical Traits
             </CardTitle>
@@ -197,7 +197,7 @@ export default function Taxonomy() {
           onClick={handleClassify}
           disabled={!selectedFile && !Object.values(traits).some(v => v.trim()) || classifyMutation.isPending}
           size="lg"
-          className="px-8"
+          className="px-8 btn-gov"
         >
           {classifyMutation.isPending ? "Analyzing..." : "Identify Species"}
         </Button>
@@ -205,10 +205,10 @@ export default function Taxonomy() {
 
       {/* Results Section */}
       {classifyMutation.data && (
-        <Card>
+        <Card className="card-gov">
           <CardHeader>
-            <CardTitle>Classification Results</CardTitle>
-            <div className="text-sm text-foreground/70">
+            <CardTitle className="text-gray-900">Classification Results</CardTitle>
+            <div className="text-sm text-gray-600">
               Model: {classifyMutation.data.meta.model} | 
               Processing time: {classifyMutation.data.meta.processing_time || 1.2}s
             </div>

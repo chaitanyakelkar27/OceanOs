@@ -1,20 +1,22 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
-import { api } from "@/api/api";
+import { api } from "../api/api";
+import { User, UserRole, LoginRequest, RegisterRequest } from "../../shared/api";
 
-type Role = "viewer" | "researcher" | "curator" | "admin";
-export type User = { id: string; email: string; role: Role; name: string } | null;
-
-type AuthContextType = {
-  user: User;
+export type AuthContextType = {
+  user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (data: RegisterRequest) => Promise<void>;
   logout: () => Promise<void>;
+  hasRole: (role: UserRole) => boolean;
+  isGovernment: boolean;
+  isResearcher: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [user, setUser] = useState<User>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,12 +27,28 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
     api
       .get("/auth/me")
-      .then(({ data }) => setUser(data.user))
+      .then((response: any) => setUser(response.data.user))
       .finally(() => setLoading(false));
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { data } = await api.post("/auth/login", { email, password });
+    console.log("useAuth login called with:", email);
+    try {
+      const response = await api.post("/auth/login", { email, password } as LoginRequest);
+      console.log("Login response received:", response.data);
+      const { data } = response;
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      setUser(data.user);
+    } catch (error) {
+      console.error("API login error:", error);
+      throw error;
+    }
+  };
+
+  const register = async (registerData: RegisterRequest) => {
+    const response = await api.post("/auth/register", registerData);
+    const { data } = response;
     localStorage.setItem("accessToken", data.accessToken);
     localStorage.setItem("refreshToken", data.refreshToken);
     setUser(data.user);
@@ -44,7 +62,24 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setUser(null);
   };
 
-  const value = useMemo(() => ({ user, loading, login, logout }), [user, loading]);
+  const hasRole = (role: UserRole): boolean => {
+    return user?.role === role;
+  };
+
+  const isGovernment = user?.role === "government";
+  const isResearcher = user?.role === "researcher";
+
+  const value = useMemo(() => ({ 
+    user, 
+    loading, 
+    login, 
+    register,
+    logout, 
+    hasRole,
+    isGovernment,
+    isResearcher
+  }), [user, loading, isGovernment, isResearcher]);
+  
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

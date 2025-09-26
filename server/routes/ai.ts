@@ -11,7 +11,7 @@ export const classifyTaxonomy: RequestHandler = async (req, res) => {
     const parsedTraits = traits ? (typeof traits === 'string' ? JSON.parse(traits) : traits) : {};
     const hasImage = !!image;
 
-    console.log('🔬 Processing species identification request:', { parsedTraits, hasImage });
+    console.log('Processing species identification request:', { parsedTraits, hasImage });
 
     // Check if AI service is available
     const serviceAvailable = await aiService.isServiceAvailable();

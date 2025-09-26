@@ -12,6 +12,69 @@ export interface DemoResponse {
 }
 
 /**
+ * Authentication & User Management Types
+ */
+export type UserRole = "government" | "researcher";
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+  organization?: string;
+  createdAt: string;
+  isActive: boolean;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: User;
+  meta: {
+    issuedAt: string;
+  };
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  name: string;
+  role: UserRole;
+  organization?: string;
+}
+
+/**
+ * Data Submission & Approval Types
+ */
+export type SubmissionStatus = "pending" | "approved" | "rejected";
+
+export interface DataSubmission {
+  id: string;
+  title: string;
+  description: string;
+  dataType: "observation" | "sensor" | "species" | "other";
+  submittedBy: string; // User ID
+  submittedAt: string;
+  status: SubmissionStatus;
+  reviewedBy?: string; // User ID of government reviewer
+  reviewedAt?: string;
+  reviewNotes?: string;
+  data: Record<string, any>; // The actual data being submitted
+  attachments?: string[]; // File URLs/paths
+}
+
+export interface ApprovalRequest {
+  submissionId: string;
+  action: "approve" | "reject";
+  notes?: string;
+}
+
+/**
  * AI Species Identification Types
  */
 export interface SpeciesSuggestion {

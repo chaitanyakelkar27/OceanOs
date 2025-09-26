@@ -49,10 +49,11 @@ export default function MapExplorer() {
   ];
 
   return (
-    <div className="grid grid-rows-[auto_1fr] gap-3">
-      <div className="rounded-md border bg-card p-3">
+    <div className="grid grid-rows-[auto_1fr] gap-6 p-6">
+      <div className="card-gov p-4">
+        <h1 className="text-2xl font-medium text-gray-900 mb-4">Marine Data Explorer</h1>
         <div className="flex flex-wrap items-center gap-3 text-sm mb-3">
-          <span className="text-foreground/70">Filters:</span>
+          <span className="text-gray-600">Filters:</span>
           <select 
             value={selectedSpecies}
             onChange={(e) => setSelectedSpecies(e.target.value)}
@@ -78,20 +79,20 @@ export default function MapExplorer() {
             placeholder="End Date"
           />
           <button 
-            className={`rounded border px-2 py-1 hover:bg-secondary ${communityReports ? 'bg-primary text-primary-foreground' : ''}`}
+            className={`rounded border px-3 py-1 text-sm ${communityReports ? 'btn-gov' : 'btn-gov-outline'}`}
             onClick={toggleCommunityReports}
           >
             {communityReports ? "Community Reports ON" : "Community Reports OFF"}
           </button>
         </div>
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-4 text-xs text-foreground/60">
-            <span>🌊 Ocean Temperature Layer</span>
-            <span>🐟 Fish Observations</span>
-            <span>📡 Sensor Data</span>
+          <div className="flex items-center gap-4 text-xs text-gray-600">
+            <span>• Ocean Temperature Layer</span>
+            <span>• Fish Observations</span>
+            <span>• Sensor Data</span>
           </div>
-          <div className="text-xs text-foreground/60">
-            {isLoading ? "Loading ocean data..." : `${data?.features?.length ?? 0} observations`}
+          <div className="text-xs text-gray-600">
+            {isLoading ? "Loading marine data..." : `${data?.features?.length ?? 0} observations`}
           </div>
         </div>
       </div>
