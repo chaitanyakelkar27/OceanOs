@@ -13,8 +13,35 @@ import { classifyTaxonomy, measureOtolith, ednaMatch, createIngestJob, getIngest
 export function createServer() {
   const app = express();
 
+  // Enhanced CORS configuration for tunneled access from Netlify
+  const corsOptions = {
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:8080',
+      'http://localhost:8081',
+      'http://localhost:8082',
+      'https://oces.netlify.app', // Your Netlify domain
+      /^https:\/\/.*\.netlify\.app$/, // Any Netlify subdomain
+      /^https:\/\/.*\.loca\.lt$/, // LocalTunnel domains
+      /^https:\/\/.*\.ngrok\.io$/, // ngrok domains (if used)
+      /^https:\/\/.*\.ngrok-free\.app$/ // ngrok free domains
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Client',
+      'X-Provenance',
+      'Accept',
+      'Origin',
+      'X-Requested-With'
+    ],
+    credentials: true,
+    optionsSuccessStatus: 200 // For legacy browser support
+  };
+
   // Middleware
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
